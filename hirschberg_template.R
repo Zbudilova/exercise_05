@@ -26,7 +26,7 @@ HirschbergTemplate <- function(X, Y, align, match, mismatch, gap){
         align <- c(DNAStringSet(first_align_row), DNAStringSet(second_align_row))
         print(align)
     }
-    else if  (length(Y) ==0)# length of Y is equal to zero
+    else if  (length(Y) == 0)# length of Y is equal to zero
     {
         for (i in (1:length(X)))# for each character in X
         {
@@ -51,7 +51,7 @@ HirschbergTemplate <- function(X, Y, align, match, mismatch, gap){
         
         left_score <- NWScore(X[1:xmid], Y, match, mismatch, gap)# NW score for the first half of X and the whole Y
         right_score <- NWScore(reverse(X[(xmid+1):xlen]), reverse(Y), match, mismatch, gap)# NW score for the second half of X and the whole Y (both are reversed)
-        suma = left_score+right_score
+        suma <- left_score+rev(right_score)
         ymid <- match(max(suma), suma) - 1
 
         # The first half
@@ -61,13 +61,13 @@ HirschbergTemplate <- function(X, Y, align, match, mismatch, gap){
         }
         else
         {
-            align <- HirschbergTemplate(X[1:(length(X)/2)],Y[1:(length(X)/2)],align,match, mismatch, gap) # call Hirschberg function for the first half of X and for the first part of Y
+            align <- HirschbergTemplate(X[1:(length(X)/2)],Y[1:ymid],align,match, mismatch, gap) # call Hirschberg function for the first half of X and for the first part of Y
         }
         
         # The second half
         if ((xmid + 1) > xlen) # X cannot be further divided
         {
-            align <- HirschbergTemplate(DNAString(""),Y[((length(Y)/2)+1):length(Y)],align,match, mismatch, gap)# call Hirschberg function for an empty DNAString object and the second half of Y
+            align <- HirschbergTemplate(DNAString(""),Y[(ymid+1):length(Y)],align,match, mismatch, gap)# call Hirschberg function for an empty DNAString object and the second half of Y
         }
         else if ((ymid + 1) > ylen) # Y cannot be further divided
         {
@@ -75,7 +75,7 @@ HirschbergTemplate <- function(X, Y, align, match, mismatch, gap){
         }
         else 
         {
-            align <- HirschbergTemplate(X[((length(X)/2)+1):length(X)],Y[((length(Y)/2)+1):length(Y)],align,match, mismatch, gap)# call hirschberg function for the second half of X and the second part of Y
+            align <- HirschbergTemplate(X[((length(X)/2)+1):length(X)],Y[(ymid+1):length(Y)],align,match, mismatch, gap)# call hirschberg function for the second half of X and the second part of Y
         }
     }
     return(align)
@@ -114,6 +114,6 @@ mismatch <- -1
 gap <- -2
 
 vysledek <- HirschbergTemplate(X, Y, align, match, mismatch, gap)
-
+vysledek
 
 
